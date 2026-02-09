@@ -1,0 +1,16 @@
+import sqlite3
+import pandas as pd
+
+# 讀取 CSV
+df = pd.read_csv("reports/compatibility_export.csv")
+
+# 寫入 SQLite
+conn = sqlite3.connect("reports/new_database.db")
+df.to_sql("compatibility", conn, index=False, if_exists="replace")
+
+# 建立索引
+conn.execute("CREATE INDEX idx_chemical_ab ON compatibility(Chemical_A, Chemical_B)")
+conn.execute("CREATE INDEX idx_chemical_b ON compatibility(Chemical_B)")
+conn.close()
+
+print("完成！")
